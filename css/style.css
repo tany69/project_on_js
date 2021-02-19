@@ -64,3 +64,18 @@ h3{
  background: #006460;
  color: #f4eff0;
 }
+.itog{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-gap: 20px;
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 1;
+    grid-row-end: auto;
+    align-content: center;
+    justify-content: normal;
+    font-weight: unset;
+    font-style: italic;
+    font-size: 15pt;
+}

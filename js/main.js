@@ -2,11 +2,13 @@ class Products {
     data=[];
     products=[];
     container= null;
+    container_sum = null;
     summa=0;
     constructor(selector){
         this.container = document.querySelector(selector);
         this._fetchData();
         this._render();
+        this._fetch_summa('.itog');
     }
 
     _fetchData(){
@@ -26,8 +28,17 @@ class Products {
             // подсчет суммы всех товаров
             this.summa +=product.price;
             this.container.insertAdjacentHTML('beforeend',product.render());
-           // this.container.insertAdjencentHTML('beforeend',product.render());
+
         }
+    }
+    _fetch_summa(selector){
+        this.container_sum = document.querySelector(selector); // определяем новый контейнер где вставить строку
+        console.log(this.container_sum); // в консоль выводиться
+        console.log(this._render_all_summa()); // и это выводится
+        this.container_sum.insertAdjencentHTML('afterbegin', this._render_all_summa()); // здесь выдает ошибку. я не понимаю почему!!!!
+    }
+    _render_all_summa(){
+        return `<p>Стоимость товаров в каталоге : ${this.summa}</p>`;
     }
 
 }
@@ -54,7 +65,8 @@ class ProductItem{
 
 }
 let list =new Products('.products');
-console.log(list.summa);
+
+
 
 //Задание 1
 // создане класса для корзины
