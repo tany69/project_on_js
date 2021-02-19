@@ -1,50 +1,90 @@
-
-const data = [
-    { title: 'Notebook',id:1,price:2000},
-    { title: 'Keyboard',id:2,price:200},
-    { title: 'Mouse',id:3,price:100},
-    { title: 'Gamepad',id:4, price:500},
-    {id:5,price:1000},
-    { title: 'Web camera', id:6, price:500}
-];
-
-const renderProduct=({title = 'Нет в наличии', price}, img='pics/img.png') => {
-   return   `<div class="product-item"> 
-                <h3>${title}</h3>
-                <img src="${img}" class="product-img">
-                <p> Цена: ${price} руб. </p>
-                <button class="add">Добавить</button>
-            </div>`
-
-};
-
-
-/*код программы который был выдан
-const render = (products) => {
-    const productsList= products.map(item=>renderProduct(item.title,item.id,item.price));
-    console.log(productsList);
-    document.querySelector('.products').innerHTML= productsList;
-
-}*/
-// тоже рабочий вариант
-/*const render = (products) => {
-    for(let i=0;i<products.length;i++){
-        const productsList= renderProduct(products[i].title,products[i].id,products[i].price);
-        document.querySelector('.products').innerHTML+= productsList;
+class Products {
+    data=[];
+    products=[];
+    container= null;
+    summa=0;
+    constructor(selector){
+        this.container = document.querySelector(selector);
+        this._fetchData();
+        this._render();
     }
-}*/
-// поправленная функция. Запятая выводится  потому что innerHTML  выводит массив как строку и запятая это разделитель по умолчанию.
-// я добавила JOIN для объединения строк массива через пробел
-const render = (products) => {
 
-    document.querySelector('.products').innerHTML= products.map(item => renderProduct(item)).join('');
-    // const list = products.map(item=>renderProduct(item));
-    // const el= document.querySelector('.products');
-    // for (let product of list){
-    //     el.insertAdjacentHTML('beforeend',product);
-    // }
+    _fetchData(){
+        this.data= [ { title: 'Notebook',id:1,price:2000},
+            { title: 'Keyboard',id:2,price:200},
+            { title: 'Mouse',id:3,price:100},
+            { title: 'Gamepad',id:4, price:500},
+            {id:5,price:1000},
+            { title: 'Web camera', id:6, price:500}
+        ];
+    }
+
+    _render(){
+        for(let data of this.data){
+            const product = new ProductItem(data);
+            this.products.push(product);
+            // подсчет суммы всех товаров
+            this.summa +=product.price;
+            this.container.insertAdjacentHTML('beforeend',product.render());
+           // this.container.insertAdjencentHTML('beforeend',product.render());
+        }
+    }
+
+}
+ console.log();
+class ProductItem{
+    title='';
+    price= 0;
+    id  =0;
+    img='';
+    constructor(product,img = 'pics/img.png'){
+        ({title:this.title, id:this.id,price:this.price}=product);
+        this.img= img;
+    }
+    render(){
+        return `<div class="product-item"> 
+                <h3>${this.title}</h3>
+                <img src="${this.img}" class="product-img">
+                <p> Цена: ${this.price} руб. </p>
+                <button class="add">Добавить</button>
+            </div>
+        `;
+    }
 
 
 }
+let list =new Products('.products');
+console.log(list.summa);
 
-render(data);
+//Задание 1
+// создане класса для корзины
+// class Cart{
+//     listItem = [];  - массив  содержащий параметры товара (title, id, price,counytItem,img) -
+//     container = null;
+//     _cartItemClick(){}   - метод  получения свойств элемента каталога, получение массива  с данными выбранного товара
+//     _calcCountItems(){}  - метов подсчета количества всех товаров в корзине
+//     _calcSumItems(){}    - метов подсчета суммы всех товаров в корзине
+//     render(){}           - метов отображения корзины с элементами и кнопкой "Оформить заказ"
+//
+// }
+
+//создание класса для элемента корзины
+// class CartItem{
+    // title=''; -наименование элемента корзины
+    // price= 0; - цена элемента корзины
+    // id  =0; - уникальный номер элемента корзины
+    // img=''; - миниатюра изображение элемента корзины
+    // countItem = 0; - кол-во элементов в корзине
+    // constructor(product,count = 1,img = 'pics/img_mini.png'){
+    //     ({title:this.title, id:this.id,price:this.price}=product);
+    //     this.img= img;
+    //     this.countItem =count;
+    // }
+
+   // cartItemCounter(ItemId,flag){}- Метод счетчик товара в корзине, работает как калькулятор при клике на + или - для увеличения количества товара в корзине.
+   // calcSumma(){} - метод подсчета суммы при увеличении/ уменьшении счетчика товара
+   // cartItemDel(){}   - метод удаления товара из корзины.
+   // render(){}        - метод  формирования блока кода  html  для вывода товара в корзине.
+// }
+
+
