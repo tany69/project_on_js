@@ -1,124 +1,243 @@
-const api=`https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses`;
+
+//const url= `E:\\Users\\Муза\\Documents\\files`;
 
 
-let getRequest= (url,cb)=> {
-    let xhr= new XMLHttpRequest();
-    xhr.open('get',url,true);
-    xhr.onreadystatechange = ()=>{
-        if(xhr.readyState !== 4){
-            return;
-        }
-        if (xhr.status !==200){
-            console.log('some err');
-            return;
-        }
-        cb(xhr.responseText);
-    }
-};
+// let getRequest= (url,cb)=> {
+//     let xhr= new XMLHttpRequest();
+//     xhr.open('get',url,true);
+//     xhr.onreadystatechange = ()=>{
+//         if(xhr.readyState !== 4){
+//             return;
+//         }
+//         if (xhr.status !==200){
+//             console.log('some err');
+//             return;
+//         }
+//         cb(xhr.responseText);
+//     }
+// };
 
 
+ let getRequest= url=> {
+     return new Promise((resolve,reject)=> {
+         let xhr = new XMLHttpRequest();
+         xhr.open('get', url, true);
+         xhr.onreadystatechange = () => {
+             if (xhr.readyState !== 4) {
+                 return;
+             }
+             if (xhr.status !== 200) {
+                 reject('error');
+                 return;
+             }
+             resolve(xhr.responseText);
+         }
 
-class Products {
-    products=[];
-    container= null;
-    container_sum = null;
-    summa=0;
-    constructor(selector){
-        this.container = document.querySelector(selector);
-        this._fetchData()
-            .then(()=>this._render());
-            //this.products._fetch_summa('.itog');
+     });
+ };
+ ///getRequest().then();
 
-    }
 
-    _fetchData(){
-        return fetch(`${api}/catalogData.json`)
-        .then(result => result.json())
-        .then(data => {
-            for(let product of data){
-                this.products.push(new ProductItem(product));
-            }
-        })
-
-    }
-
-    _render(){
-        for(let product of this.products){
-            if(product.rendered){
-                continue;
-            }
-            this.container.insertAdjacentHTML('beforeend',product.render());
-
-        }
-    }
-    _fetch_summa(selector){
-        this.container_sum = document.querySelector(selector);
-        for(let i=0;i<this.products.length;i++) {
-            this.summa += this.products[i].price;
-        }
-        this.container_sum.insertAdjacentHTML('afterbegin', this._render_all_summa());
-    }
-
-    _render_all_summa(){
-        return `<p>Стоимость товаров в каталоге : ${this.summa}</p>`;
-    }
-
-}
-console.log();
-class ProductItem{
-    title='';
-    price= 0;
-    id  =0;
-    img='';
-    rendered =false;
-    constructor(product,img = 'pics/img.png'){
-        ({product_name:this.title, id_product:this.id,price:this.price}=product);
-        this.img= img;
-    }
-    render(){
-        this.rendered= true;
-        return `<div class="product-item"> 
-                <h3>${this.title}</h3>
+ class Item{
+     product_name='';
+     price= 0;
+     id_product  =0;
+     img='';
+     rendered =false;
+     constructor(product,img = 'pics/img.png'){
+         ({product_name:this.title, id_product:this.id,price:this.price}=product);
+         this.img= img;
+     }
+     render(){
+         this.rendered= true;
+         return `<div class="product-item"> 
+                <h3>${this.product_name}</h3>
                 <img src="${this.img}" class="product-img">
                 <p> Цена: ${this.price} руб. </p>
-                <button class="add">Добавить</button>
+                <button class="add" id="${this.id_product}">Добавить</button>
             </div>
         `;
+     }
+
+
+ }
+
+ class ProductItem extends Item{}
+
+ class CartItem extends Item{
+     quantity=0;
+     constructor(product,img='pics/img_mini.png'){
+         super(product,img);
+         this.quantity =product.countItem;
+     }
+
+     changeCountItem(count){
+         this.quantity+=count;
+         this._updateItem();
+     }
+
+
+     render(){
+         this.rendered= true;
+         return `<div class="item-cart-list" id ="${this.id_product}">
+                <table border="0" align="center" width="90%">
+                <tr>
+                <td id="img">${this.img}</td>
+                <td id="title">${this.product_name}</td>
+                 <td id="countItem">$${this.quantity} each</td>
+                 <td id="summa"> $${this.price*this.quantity} руб. </td>
+                <td><button name="del" value="х" class="btn-del" id ="${this.id_product}"></button></td>
+                </tr></table></div>  `;
+     }
+     _updateItem(){
+         const blok = document.querySelector(`.item-cart-list[id="${this.id_product}"]`);
+         blok.querySelector(`#countItem`).textContent=`${this.quantity}`;
+         blok.querySelector(`#summa`).textContent=`$${this.price*this.quantity} руб.`;
+     }
+     removecartItem(){
+         const blok = document.querySelector(`.item-cart-list[id="${this.id_product}"]`).remove();
+     }
+
+ }
+
+
+ class List{
+     static itemMap={
+         Products:ProductItem,
+         Cart:CartItem
+     }
+     static Api= `https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses`;
+     products=[];
+     container= null;
+     url= '';
+     constructor(selector,url){
+         this.container = document.querySelector(selector);
+         this.url =url;
+         this._init();
+
+     }
+
+     // плдучение данных
+     getJson(url){
+         return fetch(url?url:`${List.api+this.url}`)
+             .then(result=>result.json())
+     }
+
+     //обработка данных
+     handleData(data){
+         for(let iten of data){
+             const product = new List.itemMap[this.constructor.name](item);
+             this.products.push(product);
+          }
+         this._render();
+     }
+
+     calcSum(){
+         return this.products.reduce((accum,item) => accum += item.price,0);
+     }
+     //поиск элемента массива
+     getItemId(id){
+         return this.products.find(el=>el.id_product === id);
+     }
+
+     _init(){}
+
+     _render(){
+         for(let product of this.products){
+             if(product.rendered){
+                 continue;
+             }
+             this.container.insertAdjacentHTML('beforeend',product.render());
+
+         }
+     }
+
+
+ }
+
+
+ class Products extends List{
+    cart = null;
+     constructor(cart,container = '.products',url="/catalogData.json"){
+        super(container,url);
+        this.cart=cart;
+        this.getJson()
+        .then(data => this.handleData(data));
+    }
+
+    _init(){
+         this.container.addEventListener('click',e => {
+             if(e.target.classList.contains('add')){
+                 const id = +e.target.dataset['id'];
+                 this.cart.addProduct(this.getItemId(id));
+             }
+         })
     }
 
 
 }
-let list =new Products('.products');
+
+ class Cart extends List{
+     constructor(container= '.list-cart',url = "/getBasket.json"){
+         super(container,url);
+         this.getJson()
+             .then(data => this.handleData(data.contents));
+     }
+
+     addProduct(product){
+        this.getJson(`${List.Api}/addToBasker.json`)
+            .then(data=> {
+                if (data.result){
+                    let find =this.products.find(el =>el.id_product === product.id_product);
+                    if(find){
+                        find.changeCountItem(1);
+                        retutn;
+                    }
+                    let prod =Object.assign({quantity:1},product);
+                    this.handleData([prod]);
+                }
+                else{
+                    console.log('Error!');
+                }
+
+            })
+     }
+
+     removeProduct(product){
+         this.getJson(`${List.Api}/deleteFromBasker.json`)
+             .then(data=> {
+                 if (data.result){
+                     if(product.countItem >1){
+                         product.changeCountItem(-1);
+                         retutn;
+                     }
+                     this.product.splice(this.product.index0f(product),1);
+                     product.removecartItem();
+                 }
+                 else{
+                     console.log('Error!');
+                 }
+
+             })
+     }
+
+     _init(){
+         this.container.addEventListener('click',e => {
+             if(e.target.classList.contains('btn-del')){
+                 const id = +e.target.dataset['id'];
+                 this.cart.removeProduct(this.getItemId(id));
+             }
+         })
+         document.querySelector('btn-cart').addEventListener('click', ()=>{
+             this.container.classList.toggle('invisible');
+         })
+     }
 
 
-
-//Задание 1
-// создане класса для корзины
-// class Cart{
-//     listItem = [];  - массив  содержащий параметры товара (title, id, price,counytItem,img) -
-//     container = null;
-//     _calcCountItems(){}  - метов подсчета количества всех товаров в корзине
-//     _calcSumItems(){}    - метов подсчета суммы всех товаров в корзине
-//     сartItemAdd(){}    - метод для вывода выбранного товара. Выводиться будет последним
-//     cartItemDel(){}   - метод удаления товара из корзины.
-//     HideShowCart(){} - метод отображения и скрытия корзины
-//     cartItemCounter(ItemId,flag){}- Метод счетчик товара в корзине, работает как калькулятор при клике на + или - для увеличения количества товара в корзине и считает сумму  товара
-//
-// }
-
-//создание класса для элемента корзины
-// class CartItem{
-// title=''; -наименование элемента корзины
-// price= 0; - цена элемента корзины
-// id  =0; - уникальный номер элемента корзины
-// img=''; - миниатюра изображение элемента корзины
-// countItem = 0; - кол-во элементов в корзине
-// constructor(product,count = 1,img = 'pics/img_mini.png'){
-//     ({title:this.title, id:this.id,price:this.price}=product);
-//     this.img= img;
-//     this.countItem =count;
-// }
+ }
 
 
-// render(){}        - метод  формирования блока кода  html  для вывода товара в корзине.
-// }
+// вызов объектов
+const cart =  new Cart();
+const list = new Products(cart);
+list.getJson(`getProducts.json`).then(data=>list.handleData(Data));
