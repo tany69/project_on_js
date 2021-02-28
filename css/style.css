@@ -19,7 +19,6 @@
 }
 .container{
     padding: 10px;
-    /*border: 1px solid black;*/
     display: grid;
     grid-template-rows: 30px auto 30px;
     grid-template-columns: 33% 33% 33%;
@@ -32,15 +31,17 @@
     text-align: center;
 }
 .header{
+
     grid-area: btn-cart;
     background: #015264;
     border: 1px solid black;
-    align-self: center;
+    align-self: end;
+    height: 30px;
 
     /*justify-self: ;*/
 }
 .list-cart{
-    border: 1px solid black;
+
     /*grid-area: list-cart;*/
     z-index: 9999;
     position: absolute;
@@ -51,12 +52,17 @@
     margin-top: 30px;
 
 }
+
+.invisible{
+    display: none;
+}
+
 .main{
-    border: 1px solid black;
+
     grid-area: main;
 }
 .footer{
-    border: 1px solid black;
+    border-top: solid 2px rgb(1, 82, 100);
     grid-area: footer;
     /*background: #346461;*/
 }
@@ -131,11 +137,13 @@ h3{
     font-weight: bold;
     text-align: center;
 }
-item-cart-list{
-    font-family: Tahoma;
+.list-cart{
+    margin-top: 35px;
     font-style: normal;
     font-size: 10pt;
     text-align: center;
+    border :solid 1px rgb(1, 82, 100);
+
 }
 .btn-add{
     border-radius: 15px 0px 0px 15px;
@@ -147,13 +155,23 @@ item-cart-list{
     padding: -3px;
     width:10px;
 }
-.btn-down{
-    border-radius: 0px 15px 15px 0px;
+.btn-del{
     font-family: Tahoma;
-    font-style: normal;
-    font-size: 10pt;
     font-weight: bold;
-    margin: 3px;
-    padding: -3px;
-    width:10px;
+    height: 20px;
+}
+.search-form{
+    background: #015264;
+    width: 30%;
+    text-align: right;
+
+}
+.tbl-footer{
+    inline-size: 20px;
+    background: coral;
+}
+.btn-env{
+    height: 20px;
+    width: 20px;
+
 }
