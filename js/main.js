@@ -1,5 +1,113 @@
 
 
+const App = {
+    data() {
+        return {
+            API: `https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses`,
+            catalogUrl: '/catalogData.json',
+            products: [],
+            Img: 'pics/img.png',
+            show:false,
+            cartUrl: '/getBasket.json',
+            carts: [],
+            CartNull: false,
+            ImgMini: 'pics/img_mini.png',
+            cartNullText: 'Корзина пуста!',
+            CountItemCart: 0,
+            SearchName: '',
+            isVisible: true
+        }
+    },
+
+    methods: {
+        getJson(url) {
+            return fetch(url)
+                .then(result => result.json())
+                .catch(e => console.log(e));
+        },
+
+
+        addProduct(product) {
+            this.CountItemCart=0;
+            for(let el of this.carts){
+                if(el.id_product === product.id_product){
+                    el.quantity++;
+                    console.log('1');
+                }
+                else{
+                    console.log('2');
+                    this.addCartItem(product);
+                }
+                this.CountItemCart += el.quantity;
+            }
+
+            if(this.carts.length === 0){
+                console.log('3');
+                this.addCartItem(product);
+
+            }
+        },
+
+        addCartItem(product){
+                let  newcartItem =Object.assign({quantity:1},product);
+                this.carts.push(newcartItem);
+        },
+
+        delProductCart(product,index){
+            if(this.carts){
+                this.CountItemCart=0;
+                for(let el of this.carts){
+                    if(el.id_product === product.id_product){
+                        if(el.quantity >1){
+                            el.quantity--;
+                        }
+                        else{;
+                            this.carts.splice(index,1);
+                            this.CountItemCart-=el.quantity;
+
+                        }
+                    }
+                    this.CountItemCart += el.quantity;
+                }
+            }
+        },
+        filter(value){
+
+                const regexp = new RegExp(value,'i');
+                this.products.filter(el=>el.product_name.match(regexp));
+
+        }
+
+
+            // this.list = this.movies.filter(item => {
+            //     return item.name.includes(this.inputStr);
+            // });
+
+
+    },
+    mounted() {
+        this.getJson(`${this.API + this.catalogUrl}`)
+            .then(data => {
+                for (let el of data) {
+                    this.products.push(el);
+                }
+            });
+
+        this.getJson(`${this.API + this.cartUrl}`)
+            .then(data => {
+                for (let el of data.contents) {
+                    this.CountItemCart += el.quantity;
+                    this.carts.push(el,);
+                }
+            });
+
+    }
+};
+
+Vue.createApp(App).mount('#app');
+
+/*
+
  let getRequest= url=> {
      return new Promise((resolve,reject)=> {
          let xhr = new XMLHttpRequest();
@@ -32,7 +140,7 @@
      }
      render(){
          this.rendered= true;
-         return `<div class="product-item" data-id="${this.id_product}"> 
+         return `<div class="product-item" data-id="${this.id_product}">
                 <h3>${this.product_name}</h3>
                 <img src="${this.img}" class="product-img">
                 <p> Цена: ${this.price} руб. </p>
@@ -62,6 +170,7 @@
      render(){
          this.rendered= true;
          return `<div class="item-cart-list" data-id ="${this.id_product}">
+
                 <table border="0" align="center" width="90%">
                 <tr>
                 <td id="img"><img src= "${this.img}" ></td>
@@ -214,7 +323,7 @@
                          product.changeCountItem(-1);
                          return;
                      }
-                     this.product.splice(this.product.index0f(product),1);
+                     this.product.splice(this.product.indexOf(product),1);
                      product.removecartItem();
                  }
                  else{
@@ -228,7 +337,7 @@
          this.container.addEventListener('click',e => {
              if(e.target.classList.contains('btn-del')){
                  const id = +e.target.dataset['id'];
-                 this.cart.removeProduct(this.getItemId(id));
+                 this.removeProduct(this.getItemId(id));
 
              }
          })
@@ -248,3 +357,4 @@
 const cart =  new Cart();
 const list = new Products(cart);
 // list.getJson(`getProducts.json`).then(data=>list.handleData(Data));
+*/
