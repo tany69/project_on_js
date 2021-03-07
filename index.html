@@ -2,62 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Project JS</title>
     <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
-
 <body>
 <div id="app">
     <div class="container">
         <div class="header">
-<!--            <button class="btn-cart"  @click="show = !show">Корзина</button>-->
-            <button class="btn-cart"  @click="isVisible = !isVisible">Корзина</button>
-            <form action="#" class="search-form" v-model="SearchName">
-                <input type="text" class="search-field">
-                <button   class ="btn-search" type="submit" @click="filter(SearchName)"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-
-        <div class="list-cart"  :class="{invisible : isVisible}">
-<!--            <div class="list-cart"  v-if="show">-->
-            <div class="item-cart-list"  v-for= "(el,index) of carts" :key="el.id_product" >
-                <table border="0" align="center" width="90%">
-                    <tr>
-                        <td id="img"><img :src= "ImgMini" :alt="el.product_name" ></td>
-                        <td id="title">{{el.product_name}}</td>
-                        <td id="pricetItem">цена: {{el.price}} </td>
-                        <td id="countItem">Кол-во: {{el.quantity}} </td>
-                        <td id="summa"> {{el.price*el.quantity}} руб. </td>
-                        <td><button  class="btn-del" @click="delProductCart(el,index)" type="submit">x</button></td>
-                    </tr>
-                </table>
-            </div>
-           <div>
-               <p>В корзине {{ CountItemCart }} товаров</p>
-               <p id="CartNull">{{ CountItemCart > 0 ? '': cartNullText}}</p>
-           </div>
-
-
-    </div>
-        <div class="main" >
-            <div class="products">
-                <div class="product-item"  v-for= "el of products" :key="el.id_product">
-                    <h3>{{el.product_name}}</h3>
-                    <img :src="Img" :alt = "el.product_name" class="product-img">
-                    <p> Цена: {{el.price}} руб. </p>
-                    <button class="add" @click="addProduct(el)">Добавить</button>
-                </div>
-
-            </div>
-        </div>
-        <div class="footer">
-
+            <search ref="search"></search>
+            <cart ref="cart"></cart>
         </div>
     </div>
+    <div class="main" >
+       <products ref="products"></products>
+        <errors ref="errors"></errors>
+    </div>
+    <div class="footer"></div>
 </div>
 <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
 <script src="https://unpkg.com/vue@next"></script>
-<script  src="js/main.js"></script>
+<script defer src="js/main.js" type="module"></script>
 </body>
 
 </html>
