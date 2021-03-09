@@ -1,0 +1,12 @@
+[
+  {
+    "product_name": "Монитор",
+    "id-product": "45",
+    "price": 800
+  } ,
+  {
+    "product_name": "Gamepad",
+    "id-product": "48",
+    "price": 2000
+  }
+]
