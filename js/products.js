@@ -22,9 +22,9 @@ import {Search} from "./search.js";
          this.getJson(`${this.API + this.catalogUrl}`)
              .then(data => {
                  for (let el of data) {
-                     this.products.push(el);
+                     this.products.push(el)
                  }
-             });
+             })
          // this.getJson(`getProducts.json`)
          //     .then(data => {
          //         for (let el of data) {

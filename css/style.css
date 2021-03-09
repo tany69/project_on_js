@@ -41,17 +41,16 @@
     /*justify-self: ;*/
 }
 .list-cart{
-
     /*grid-area: list-cart;*/
     z-index: 9999;
     position: absolute;
     float:left;
     background: white;
-    margin-left: calc(60% + 1.5rem);
-    width: 35%;
+    margin-left: calc(70% + 1.5rem);
+    width: 25%;
     margin-top: 30px;
     height: auto;
-
+    border :solid 1px rgb(1, 82, 100);
 }
 
 .invisible{
@@ -138,13 +137,11 @@ h3{
     font-weight: bold;
     text-align: center;
 }
-.list-cart{
+.item-cart-list{
     margin-top: 35px;
     font-style: normal;
     font-size: 10pt;
-    text-align: center;
-    border :solid 1px rgb(1, 82, 100);
-
+    text-align:left;
 }
 .btn-add{
     border-radius: 15px 0px 0px 15px;
@@ -191,4 +188,9 @@ h3{
 .btn-err{
     border: none;
     color:black;
+}
+.cart-item{
+    text-align: left;
+    display: inline;
+    padding-left: 10px;
 }

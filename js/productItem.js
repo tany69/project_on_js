@@ -5,8 +5,8 @@ export const ProductItem = {
                     <img :src="img" :alt="product.product_name">
                     <div>
                         <h3>{{product.product_name}}</h3>
-                        <p> Цена:{{product.price}}</p>
-                        <button class="add" @click="$root.$refs.cart.addProduct(product)">Купить</button>
+                        <p> Р¦РµРЅР°:{{product.price}}</p>
+                        <button class="add" @click="$root.$refs.cart.addProduct(product)">РљСѓРїРёС‚СЊ</button>
                     </div>
                 </div>
     

@@ -1,13 +1,13 @@
-export const Errors={
-    data ()={
+export const Errors ={
+    data(){
         return{
-            errText=''
+            errText: ''
         }
     },
     method:{
       setError(mess){
           this.errText= mess
-    }
+        }
     },
     template:`
     <div class="err-block" v-if="text">

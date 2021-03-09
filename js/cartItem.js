@@ -3,15 +3,15 @@ export const CartItem = {
     emits: ['delProduct'],
     template: `
 
-            <div class="item-cart-list" >
-                    <div>
+            <div class="item-cart-list" >                  
+                       
                         <img :src= "img" :alt="cartItem.product_name" >
-                        <p id="title">{{cartItem.product_name}}</p>
-                        <p id="pricetItem">цена: {{cartItem.price}} </p>
-                        <p id="countItem">Кол-во: {{cartItem.quantity}} </p>
-                        <p id="summa"> {{cartItem.price*cartItem.quantity}} руб. </p>
-                        <button  class="btn-del" @click="$emit('delProduct',cartItem)" type="submit">&times;</button>
-                    </div>
+                       <p class="cart-item" id="title">{{cartItem.product_name}}</p>
+                       <p class="cart-item" id="pricetItem">С†РµРЅР°: {{cartItem.price}} </p>
+                        <p class="cart-item" id="countItem">РљРѕР»-РІРѕ: {{cartItem.quantity}} </p>
+                       <p class="cart-item" id="summa"> {{cartItem.price*cartItem.quantity}} СЂСѓР±. </p>
+                        <button  class="btn-del" @click="$root.$refs.cart.delProduct(cartItem)" type="submit">&times;</button> 
+                                      
             </div>
     `
 };

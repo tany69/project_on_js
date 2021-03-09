@@ -1,12 +1,14 @@
 import {Cart} from "./carts.js";
 import {Products} from "./Products.js";
 import {Search} from "./search.js";
-import {errord} from "./errors.js";
+import {Errors} from "./errors.js";
 
 const App = {
     components: {
         Cart,
-        Products
+        Products,
+        Search,
+        Errors
     },
     data() {
         return {
@@ -17,7 +19,7 @@ const App = {
     provide() {
         return {
             API: this.API,
-            getJson: this.getJson,
+            getJson: this.getJson
         }
     },
     methods: {
