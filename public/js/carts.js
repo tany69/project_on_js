@@ -1,7 +1,7 @@
 import {CartItem} from "./cartItem.js";
 
 export const Cart = {
-    inject: ['API', 'getJson'],
+    inject: ['API', 'getJson','postJson','putJson','deleteJson'],
     components: {
         CartItem
     },
@@ -27,35 +27,53 @@ export const Cart = {
     },
     methods: {
         addProduct(product) {
-            this.getJson(`${this.API}/addToBasket.json`)
-                .then(data => {
-                    if(data.result){
-                        let find = this.cartItems.find(el => el.id_product === product.id_product);
-                        if(find){
+            let find = this.cartItems.find(el => el.id_product === product.id_product);
+            console.log(find);
+            if (find) {
+                this.putJson(`/api/cart/${find.id_product}`, { quantity: 1 })
+                    .then(data => {
+                        if (data.result) {
                             find.quantity++
-                        } else {
-                            let prod = Object.assign({quantity: 1}, product);
-                            this.cartItems.push(prod);
                         }
+                    });
+                return;
+            }
+
+            const prod = Object.assign( product,{quantity: 1});
+            console.log(prod);
+            this.postJson(`/api/cart`, prod)
+                .then(data => {
+                    console.log(data.result);
+                    if (data.result) {
+                        console.log(data);
+                        this.cartItems.push(prod);
                     }
-                })
+                });
         },
 
         delProduct(product){
-            this.getJson(`${this.API}/deleteFromBasket.json`)
-                .then(data => {
-                    if(data.result){
-                        if(product.quantity > 1){
-                            product.quantity--
-                        } else {
-                            this.cartItems.splice(this.cartItems.indexOf(product), 1)
+                let find = this.cartItems.find(el => el.id_product === product.id_product);
+                if (find.quantity> 1) {
+                    this.deleteJson(`/api/cart/${find.id_product}`, { quantity: -1 })
+                        .then(data => {
+                            if (data.result) {
+                                find.quantity--
+                            }
+                        });
+                    return;
+                }
+                // //не работает этот блок
+                this.deleteJson(`/api/cart/${find.id_product}`, { quantity: 0 })
+                    .then(data => {
+                        if (data.result) {
+                            this.cartItems.splice(this.cartItems.indexOf(find), 1);
                         }
-                    }
-                })
-        },
+                    });
+           // this.cartItems.splice(this.cartItems.indexOf(find.id_product), 1);
+        }
     },
     mounted() {
-        this.getJson(`${this.API + this.cartUrl}`)
+        this.getJson(`/api/cart`)
             .then(data => {
                 for (let el of data.contents) {
                     this.cartItems.push(el)
